@@ -1,3 +1,2 @@
 /: SHOW SERVER_VERSION
 /tz: SHOW TIMEZONE
-/weather_id: SELECT weather_id FROM weather_desc_table
