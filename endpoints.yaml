@@ -8,5 +8,5 @@
 /windsp: SELECT MAX(wind_speed) AS wind_speed FROM weather_traffic;
 /avgsptemp_byhour: SELECT EXTRACT(HOUR FROM binned_time) AS hour_of_day, AVG(current_speed) AS average_speed, AVG((main_temp - 273.15) * 9/5 + 32) AS average_temp_fahrenheit FROM weather_traffic GROUP BY EXTRACT(HOUR FROM binned_time) ORDER BY EXTRACT(HOUR FROM binned_time);
 /avgsptemp_byhour_day: SELECT EXTRACT(HOUR FROM binned_time) AS hour_of_day, CASE EXTRACT(DOW FROM binned_datetime_bin) WHEN 0 THEN 'Sunday' WHEN 1 THEN 'Monday' WHEN 2 THEN 'Tuesday' WHEN 3 THEN 'Wednesday' WHEN 4 THEN 'Thursday' WHEN 5 THEN 'Friday' WHEN 6 THEN 'Saturday' ELSE 'Unknown' END AS day_of_week, AVG(current_speed) AS average_speed FROM weather_traffic GROUP BY EXTRACT(HOUR FROM binned_time), EXTRACT(DOW FROM binned_datetime_bin) ORDER BY EXTRACT(DOW FROM binned_datetime_bin), EXTRACT(HOUR FROM binned_time);
-/day SELECT EXTRACT(HOUR FROM binned_time) AS hour_of_day FROM weather_traffic;
-
+/hour: SELECT EXTRACT(HOUR FROM binned_time) AS hour_of_day FROM weather_traffic GROUP BY EXTRACT(HOUR FROM binned_time) ORDER BY EXTRACT(HOUR FROM binned_time);
+/day: SELECT CASE EXTRACT(DOW FROM binned_datetime_bin) WHEN 0 THEN 'Sunday' WHEN 1 THEN 'Monday' WHEN 2 THEN 'Tuesday' WHEN 3 THEN 'Wednesday' WHEN 4 THEN 'Thursday' WHEN 5 THEN 'Friday' WHEN 6 THEN 'Saturday' ELSE 'Unknown' END AS day_of_week FROM weather_traffic GROUP BY EXTRACT(DOW FROM binned_datetime_bin) ORDER BY EXTRACT(DOW FROM binned_datetime_bin);
