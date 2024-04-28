@@ -1,4 +1,8 @@
 /: SHOW SERVER_VERSION
 /tz: SHOW TIMEZONE
 /main_temp: SELECT main_temp FROM weather_traffic;
-/current_speed: SELECT current_speed FROM weather_traffic;
+/avgcurrentspeed: SELECT EXTRACT(HOUR FROM time_) AS hour_of_day,
+AVG(current_speed) AS average_speed
+FROM weather_traffic
+GROUP BY EXTRACT(HOUR FROM time_)
+ORDER BY EXTRACT(HOUR FROM time_);
