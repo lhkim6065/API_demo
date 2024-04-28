@@ -39,16 +39,32 @@ with open("endpoints.yaml") as f:
 # Custom Endpoints
 #------------------------------------------------
 
-@app.get("/movies/{page}")
-def movies_by_page(page):
+@app.get("/weather_traffic/{page}")
+def movies_by_page(page, content=None):
      with eng.connect() as con:
         query = """
-                SELECT *
-                FROM movies
-                ORDER BY index
-                LIMIT 50
-                OFFSET :off
+        SELECT CASE EXTRACT(DOW FROM binned_datetime_bin)
+           WHEN 0 THEN 'Sunday'
+           WHEN 1 THEN 'Monday'
+           WHEN 2 THEN 'Tuesday'
+           WHEN 3 THEN 'Wednesday'
+           WHEN 4 THEN 'Thursday'
+           WHEN 5 THEN 'Friday'
+           WHEN 6 THEN 'Saturday'
+           ELSE 'Unknown'
+       END AS day_of_week
+    FROM weather_traffic
+    GROUP BY EXTRACT(DOW FROM binned_datetime_bin)
+    ORDER BY EXTRACT(DOW FROM binned_datetime_bin)
+    OFFSET :off
                 """
-        res = con.execute(text(query), {'off': 50*int(page)})
+        if content is not None:
+            query = """
+            SELECT *
+            FROM weather_traffic
+            WHERE binned_datetime_bin ~ :match
+            OFFSET :off
+            """
+        res = con.execute(text(query), {'off': 50*int(page), 'match':content})
         return [r._asdict() for r in res]
 
