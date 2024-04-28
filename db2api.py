@@ -39,7 +39,7 @@ with open("endpoints.yaml") as f:
 # Custom Endpoints
 #------------------------------------------------
 
-@app.get("/weather_traffic/{page}")
+@app.get("/avgsptemp_byhour_day/{page}")
 def movies_by_page(page, content=None):
      with eng.connect() as con:
         query = """
