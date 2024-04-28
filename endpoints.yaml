@@ -1,7 +1,12 @@
 /: SHOW SERVER_VERSION
 /tz: SHOW TIMEZONE
-/main_temp: SELECT main_temp FROM weather_traffic;
-/avgcurrentspeed: SELECT EXTRACT(HOUR FROM time_) AS hour_of_day, AVG(current_speed) AS average_speed, AVG((main_temp - 273.15) * 9/5 + 32) AS average_temp_fahrenheit FROM weather_traffic GROUP BY EXTRACT(HOUR FROM time_) ORDER BY EXTRACT(HOUR FROM time_);
 /weather_main: SELECT DISTINCT weather_main FROM weather_traffic;
-/weather_description: SELECT DISTINCT weather_icon, weather_description FROM weather_traffic;
-/avgspeed_by_weather: SELECT weather_main, AVG(current_speed) AS average_speed FROM weather_traffic GROUP BY weather_main;
+/weather_desc: SELECT DISTINCT weather_description, weather_main FROM weather_traffic;
+/avgspd_weathermain: SELECT weather_main, AVG(current_speed) AS average_speed FROM weather_traffic GROUP BY weather_main;
+/avgspd_weatherdesc: SELECT weather_description, AVG(current_speed) AS average_speed FROM weather_traffic wt GROUP BY weather_description ORDER BY average_speed DESC;
+/rain_avgspd: SELECT CASE WHEN weather_description LIKE '%rain%' OR weather_description LIKE '%shower%' THEN 'Rainy' ELSE 'Non-Rainy' END AS weather_condition, AVG(current_speed) AS average_speed FROM weather_traffic GROUP BY weather_condition ORDER BY average_speed;
+/windsp: SELECT MAX(wind_speed) AS wind_speed FROM weather_traffic;
+/avgsptemp_byhour: SELECT EXTRACT(HOUR FROM binned_time) AS hour_of_day, AVG(current_speed) AS average_speed, AVG((main_temp - 273.15) * 9/5 + 32) AS average_temp_fahrenheit FROM weather_traffic GROUP BY EXTRACT(HOUR FROM binned_time) ORDER BY EXTRACT(HOUR FROM binned_time);
+/avgsptemp_byhour_day: SELECT EXTRACT(HOUR FROM binned_time) AS hour_of_day, CASE EXTRACT(DOW FROM binned_datetime_bin) WHEN 0 THEN 'Sunday' WHEN 1 THEN 'Monday' WHEN 2 THEN 'Tuesday' WHEN 3 THEN 'Wednesday' WHEN 4 THEN 'Thursday' WHEN 5 THEN 'Friday' WHEN 6 THEN 'Saturday' ELSE 'Unknown' END AS day_of_week, AVG(current_speed) AS average_speed FROM weather_traffic GROUP BY EXTRACT(HOUR FROM binned_time), EXTRACT(DOW FROM binned_datetime_bin) ORDER BY EXTRACT(DOW FROM binned_datetime_bin), EXTRACT(HOUR FROM binned_time);
+
+
