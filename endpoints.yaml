@@ -3,3 +3,4 @@
 /main_temp: SELECT main_temp FROM weather_traffic;
 /avgcurrentspeed: SELECT EXTRACT(HOUR FROM time_) AS hour_of_day, AVG(current_speed) AS average_speed, AVG((main_temp - 273.15) * 9/5 + 32) AS average_temp_fahrenheit FROM weather_traffic GROUP BY EXTRACT(HOUR FROM time_) ORDER BY EXTRACT(HOUR FROM time_);
 /weather_main: SELECT DISTINCT weather_main FROM weather_traffic;
+/weather_description: SELECT DISTINCT weather_icon, weather_description FROM weather_traffic;
