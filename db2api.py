@@ -39,23 +39,14 @@ with open("endpoints.yaml") as f:
 # Custom Endpoints
 #------------------------------------------------
 
-@app.get("/avgsptemp_byhour_day/{page}")
+@app.get("/movies/{page}")
 def movies_by_page(page):
      with eng.connect() as con:
         query = """
-                SELECT CASE EXTRACT(DOW FROM binned_datetime_bin)
-                WHEN 0 THEN 'Sunday'
-                WHEN 1 THEN 'Monday'
-                WHEN 2 THEN 'Tuesday'
-                WHEN 3 THEN 'Wednesday'
-                WHEN 4 THEN 'Thursday'
-                WHEN 5 THEN 'Friday'
-                WHEN 6 THEN 'Saturday'
-                ELSE 'Unknown'
-                END AS day_of_week
-                FROM weather_traffic
-                GROUP BY EXTRACT(DOW FROM binned_datetime_bin)
-                ORDER BY EXTRACT(DOW FROM binned_datetime_bin);
+                SELECT *
+                FROM movies
+                ORDER BY index
+                LIMIT 50
                 OFFSET :off
                 """
         res = con.execute(text(query), {'off': 50*int(page)})
