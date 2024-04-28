@@ -43,11 +43,21 @@ with open("endpoints.yaml") as f:
 def movies_by_page(page):
      with eng.connect() as con:
         query = """
-            SELECT *
-            FROM weather_traffic
-            WHERE binned_datetime_bin ~ :match
-            OFFSET :off
-            """
+                SELECT CASE EXTRACT(DOW FROM binned_datetime_bin)
+                WHEN 0 THEN 'Sunday'
+                WHEN 1 THEN 'Monday'
+                WHEN 2 THEN 'Tuesday'
+                WHEN 3 THEN 'Wednesday'
+                WHEN 4 THEN 'Thursday'
+                WHEN 5 THEN 'Friday'
+                WHEN 6 THEN 'Saturday'
+                ELSE 'Unknown'
+                END AS day_of_week
+                FROM weather_traffic
+                GROUP BY EXTRACT(DOW FROM binned_datetime_bin)
+                ORDER BY EXTRACT(DOW FROM binned_datetime_bin);
+                OFFSET :off
+                """
         res = con.execute(text(query), {'off': 50*int(page)})
         return [r._asdict() for r in res]
 
