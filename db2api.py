@@ -40,7 +40,7 @@ with open("endpoints.yaml") as f:
 #------------------------------------------------
 
 @app.get("/avgsptemp_byhour_day/{page}")
-def movies_by_page(page, content=None):
+def movies_by_page(page):
      with eng.connect() as con:
         query = """
             SELECT *
@@ -48,6 +48,6 @@ def movies_by_page(page, content=None):
             WHERE binned_datetime_bin ~ :match
             OFFSET :off
             """
-        res = con.execute(text(query), {'off': 50*int(page), 'match':content})
+        res = con.execute(text(query), {'off': 50*int(page)})
         return [r._asdict() for r in res]
 
